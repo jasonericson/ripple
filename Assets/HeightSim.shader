@@ -57,10 +57,12 @@ Shader "Unlit/HeightSim"
                 float2 uv3 = i.uv + float2( 0.0, -1.0) * _TexelSize;
                 float2 uv4 = i.uv + float2( 0.0,  1.0) * _TexelSize;
 
+                float texelVal = tex2D(_PreviousHeight1, uv1).r + tex2D(_PreviousHeight1, uv2).r + tex2D(_PreviousHeight1, uv3).r + tex2D(_PreviousHeight1, uv4).r;
                 float3 baseHeight = (tex2D(_PreviousHeight1, i.uv).rgb * 4.0);
 
-                float3 thing = tex2D(_PreviousHeight1, uv1).r + tex2D(_PreviousHeight1, uv2).r + tex2D(_PreviousHeight1, uv3).r + tex2D(_PreviousHeight1, uv4).r - baseHeight;
-                float3 col = ((baseHeight + thing * _TravelSpeed) * 0.5 - tex2D(_PreviousHeight2, i.uv).r) * _Dampening;
+                float3 thing = texelVal - baseHeight;
+                float prevHeight2Val = tex2D(_PreviousHeight2, i.uv).r;
+                float3 col = ((baseHeight + thing * _TravelSpeed) * 0.5 - prevHeight2Val) * _Dampening;
 
                 return fixed4(col, 1.0);
             }
