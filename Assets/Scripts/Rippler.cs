@@ -7,8 +7,8 @@ using UnityEngine.Experimental.GlobalIllumination;
 public class Rippler : MonoBehaviour
 {
     public List<RenderTexture> heightMaps;
-
-    public Texture2D swapTex;
+    public Camera splashCam;
+    public Renderer splashRenderer;
 
     private int heightState;
     private Renderer rippleRenderer;
@@ -26,26 +26,27 @@ public class Rippler : MonoBehaviour
 
     void DoRipple(float strength, Vector2 position, float size)
     {
-        var heightMap = heightMaps[heightState];
-
         var posColor = new Color(MapRangeClamped(position.x, 0.2f, 0.8f), MapRangeClamped(position.y, 0.2f, 0.8f), 0.0f, 0.0f);
 
         var sizeClamped = MapRangeClamped(strength, 0.02f, 0.035f);
 
-        rippleRenderer.material.SetColor("_ForcePosition", posColor);
-        rippleRenderer.material.SetFloat("_ForceSize", sizeClamped);
-        rippleRenderer.material.SetFloat("_ForceStrength", strength);
+        splashRenderer.material.SetColor("_ForcePosition", posColor);
+        splashRenderer.material.SetFloat("_ForceSize", sizeClamped);
+        splashRenderer.material.SetFloat("_ForceStrength", strength);
+
+        splashCam.targetTexture = heightMaps[heightState];
+        splashCam.Render();
     }
 
     // Update is called once per frame
     void Update()
     {
-        // heightState = (heightState + 1) % heightMaps.Count;
+        heightState = (heightState + 1) % heightMaps.Count;
 
-        // var lastHeightIdx = (heightState - 1 + heightMaps.Count) % heightMaps.Count;
-        // rippleRenderer.material.SetTexture("_PreviousHeight1", heightMaps[lastHeightIdx]);
-        // var lastLastHeightIdx = (heightState - 2 + heightMaps.Count) % heightMaps.Count;
-        // rippleRenderer.material.SetTexture("_PreviousHeight2", heightMaps[lastLastHeightIdx]);
+        var lastHeightIdx = (heightState - 1 + heightMaps.Count) % heightMaps.Count;
+        rippleRenderer.material.SetTexture("_PreviousHeight1", heightMaps[lastHeightIdx]);
+        var lastLastHeightIdx = (heightState - 2 + heightMaps.Count) % heightMaps.Count;
+        rippleRenderer.material.SetTexture("_PreviousHeight2", heightMaps[lastLastHeightIdx]);
 
         // rippleRenderer.material.SetTexture("_MainTex", heightMaps[lastHeightIdx]);
 
