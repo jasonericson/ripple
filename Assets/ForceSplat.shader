@@ -5,10 +5,12 @@ Shader "Unlit/ForceSplat"
         _ForcePosition ("Force Position", Color) = (0.5, 0.5, 0.0, 0.0)
         _ForceSize ("Force Size", Float) = 0.02
         _ForceStrength ("Force Strength", Float) = 1.0
+        _Heightfield ("Height Field", 2D) = "white" {}
+        _Thing ("Thing", Float) = 0.0
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" }
+        Tags { "RenderType"="Additive" }
         LOD 100
 
         Pass
@@ -36,6 +38,8 @@ Shader "Unlit/ForceSplat"
             float4 _ForcePosition;
             float _ForceSize;
             float _ForceStrength;
+            sampler2D _Heightfield;
+            float _Thing;
 
             v2f vert (appdata v)
             {
@@ -47,8 +51,8 @@ Shader "Unlit/ForceSplat"
 
             fixed4 frag (v2f i) : SV_Target
             {
-                float4 col = (clamp((1.0 - length(i.uv - _ForcePosition.rg)) - (1.0 - _ForceSize), 0.0, 1.0) / _ForceSize) * _ForceStrength;
-                return col;
+                float4 col = (clamp((1.0 - length(i.uv - _ForcePosition.xy)) - (1.0 - _ForceSize), 0.0, 1.0) / _ForceSize) * _ForceStrength;
+                return col + tex2D(_Heightfield, 1.0 - i.uv);
             }
             ENDCG
         }

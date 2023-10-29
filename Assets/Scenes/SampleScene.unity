@@ -149,6 +149,7 @@ MonoBehaviour:
   - {fileID: 8400000, guid: 377cd146344b0324eb0d9128379ad678, type: 2}
   - {fileID: 8400000, guid: b8bf9eba8d1ddd642873f96b7214df8f, type: 2}
   - {fileID: 8400000, guid: 8823aca00f53d9f42973cfc855fee1b5, type: 2}
+  tempHeightMap: {fileID: 8400000, guid: d7a42d6c2c168d3479d8d0caf820dd25, type: 2}
   splashCam: {fileID: 1168127469}
   splashRenderer: {fileID: 1951175622}
   heightCam: {fileID: 1979591597}
@@ -485,8 +486,8 @@ Camera:
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_TargetEye: 3
-  m_HDR: 1
-  m_AllowMSAA: 1
+  m_HDR: 0
+  m_AllowMSAA: 0
   m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
   m_OcclusionCulling: 1
@@ -797,8 +798,8 @@ Camera:
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_TargetEye: 3
-  m_HDR: 1
-  m_AllowMSAA: 1
+  m_HDR: 0
+  m_AllowMSAA: 0
   m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
   m_OcclusionCulling: 1
@@ -880,8 +881,8 @@ Camera:
   m_TargetTexture: {fileID: 8400000, guid: f0919e9f79fead34e911dcbe702aac0f, type: 2}
   m_TargetDisplay: 0
   m_TargetEye: 3
-  m_HDR: 1
-  m_AllowMSAA: 1
+  m_HDR: 0
+  m_AllowMSAA: 0
   m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
   m_OcclusionCulling: 1
