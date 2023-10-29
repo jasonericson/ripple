@@ -51,7 +51,7 @@ Shader "Unlit/ForceSplat"
 
             fixed4 frag (v2f i) : SV_Target
             {
-                float4 col = (clamp((1.0 - length(i.uv - _ForcePosition.xy)) - (1.0 - _ForceSize), 0.0, 1.0) / _ForceSize) * _ForceStrength;
+                float4 col = (clamp((1.0 - length(i.uv - pow(_ForcePosition, 0.454545).xy)) - (1.0 - _ForceSize), 0.0, 1.0) / _ForceSize) * _ForceStrength;
                 return col + tex2D(_Heightfield, 1.0 - i.uv);
             }
             ENDCG

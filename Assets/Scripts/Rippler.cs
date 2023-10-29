@@ -37,13 +37,6 @@ public class Rippler : MonoBehaviour
             ClearRenderTexture(heightMap);
         }
         ClearRenderTexture(tempHeightMap);
-        
-        var x = UnityEngine.Random.Range(0.0f, 1.0f);
-        var y = UnityEngine.Random.Range(0.0f, 1.0f);
-        var size = UnityEngine.Random.Range(0.0f, 1.0f);
-        var strength = UnityEngine.Random.Range(0.2f, 1.0f);
-
-        DoRipple(strength, new Vector2(x, y), size, 0.0f);
     }
 
     float MapRangeClamped(float value, float outRangeA, float outRangeB)
@@ -51,9 +44,19 @@ public class Rippler : MonoBehaviour
         return Mathf.Lerp(outRangeA, outRangeB, Mathf.Clamp01(value));
     }
 
-    void DoRipple(float strength, Vector2 position, float size, float thing)
+    public void DoRippleFromWorldPos(Vector3 worldPos, float strength, float size)
     {
-        var posColor = new Color(MapRangeClamped(position.x, 0.2f, 0.8f), MapRangeClamped(position.y, 0.2f, 0.8f), 0.0f, 0.0f);
+        // @todo: if we move the plane, we'll have to factor in position
+        var normalPos = new Vector2(worldPos.x * 0.5f / this.transform.localScale.x + 0.5f, worldPos.z * 0.5f / this.transform.localScale.z + 0.5f);
+        Debug.LogFormat("Hit World Pos: {0}, {1}", worldPos.x, worldPos.z);
+        Debug.LogFormat("Hit Local Pos: {0}, {1}", normalPos.x, normalPos.y);
+        DoRipple(0.5f, normalPos, 0.5f);
+        // DoRipple(0.5f, new Vector2(0.5f, 0.5f), 0.5f);
+    }
+
+    private void DoRipple(float strength, Vector2 position, float size)
+    {
+        var posColor = new Color(position.x, position.y, 0.0f, 0.0f);
 
         var sizeClamped = MapRangeClamped(strength, 0.02f, 0.035f);
 
@@ -62,7 +65,6 @@ public class Rippler : MonoBehaviour
         splashRenderer.material.SetFloat("_ForceStrength", strength);
         Graphics.CopyTexture(heightMaps[heightState], tempHeightMap);
         splashRenderer.material.SetTexture("_Heightfield", tempHeightMap);
-        splashRenderer.material.SetFloat("_Thing", thing);
 
         splashCam.targetTexture = heightMaps[heightState];
         splashCam.Render();
@@ -91,14 +93,14 @@ public class Rippler : MonoBehaviour
 
         rippleRenderer.material.SetTexture("_Heightfield", heightMaps[heightState]);
 
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            var x = UnityEngine.Random.Range(0.0f, 1.0f);
-            var y = UnityEngine.Random.Range(0.0f, 1.0f);
-            var size = UnityEngine.Random.Range(0.0f, 1.0f);
-            var strength = UnityEngine.Random.Range(0.2f, 1.0f);
+        // if (Input.GetKeyDown(KeyCode.Space))
+        // {
+        //     var x = UnityEngine.Random.Range(0.0f, 1.0f);
+        //     var y = UnityEngine.Random.Range(0.0f, 1.0f);
+        //     var size = UnityEngine.Random.Range(0.0f, 1.0f);
+        //     var strength = UnityEngine.Random.Range(0.2f, 1.0f);
 
-            DoRipple(strength, new Vector2(x, y), size, 1.0f);
-        }
+        //     DoRipple(strength, new Vector2(x, y), size, 1.0f);
+        // }
     }
 }
