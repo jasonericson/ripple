@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Unlit_RippleShader
-  m_Shader: {fileID: 4800000, guid: bba07e43b67bf4942bea872102d28f38, type: 3}
+  m_Name: Unlit_ComputeNormal
+  m_Shader: {fileID: 4800000, guid: 6b1e73e6dbaf2af40ad63f7111bbf505, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -23,22 +23,13 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _GradientTex:
-        m_Texture: {fileID: 2800000, guid: 98b5527eee2321f41bce4e8b7f4451b5, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _Heightfield:
-        m_Texture: {fileID: 8400000, guid: f0919e9f79fead34e911dcbe702aac0f, type: 2}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 19ef8281d06070d409a227146e716023, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _HeightMax: 0.5
-    - _HeightScale: 0.5
-    m_Colors:
-    - _WaterColor: {r: 0.235, g: 0.83, b: 1, a: 1}
+    - _HeightScale: 0.01
+    - _TexelSize: 0.003906
+    m_Colors: []
   m_BuildTextureStacks: []

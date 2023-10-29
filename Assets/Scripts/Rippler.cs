@@ -11,6 +11,8 @@ public class Rippler : MonoBehaviour
     public Renderer splashRenderer;
     public Camera heightCam;
     public Renderer heightRenderer;
+    public Camera normalCam;
+    public Renderer normalRenderer;
 
     private int heightState;
     private Renderer rippleRenderer;
@@ -65,11 +67,11 @@ public class Rippler : MonoBehaviour
 
             heightCam.targetTexture = heightMaps[heightState];
             heightCam.Render();
-
-            rippleRenderer.material.SetTexture("_MainTex", heightMaps[heightState]);
         }
+        
+        normalRenderer.material.SetTexture("_Heightfield", heightMaps[heightState]);
 
-        // rippleRenderer.material.SetTexture("_MainTex", heightMaps[lastHeightIdx]);
+        rippleRenderer.material.SetTexture("_Heightfield", heightMaps[heightState]);
 
         if (Input.GetKeyDown(KeyCode.Space))
         {

@@ -46,10 +46,10 @@ Shader "Unlit/RippleShader"
             v2f vert (appdata v)
             {
                 v2f o;
-                o.vertex = UnityObjectToClipPos(v.vertex);
 
-                float height = clamp(tex2D(_Heightfield, v.uv).r * _HeightScale, 0.0, _HeightMax);
-                // v.vertex.xyz = float3(0.0, 0.0, height);
+                float height = clamp(tex2Dlod(_Heightfield, float4(v.uv, 0.0, 0.0)).r * _HeightScale, 0.0, _HeightMax);
+                v.vertex.y += height;
+                o.vertex = UnityObjectToClipPos(v.vertex);
 
                 o.uv = v.uv;
                 return o;
@@ -66,8 +66,6 @@ Shader "Unlit/RippleShader"
 
                 float4 colorCombined = lerp(_WaterColor, colorMain, colorHeight.r);
                 fixed4 colorFinal = lerp(float4(1.0, 1.0, 1.0, 1.0), colorCombined, colorHeight.a);
-
-                return colorMain;
 
                 return colorFinal;
             }
