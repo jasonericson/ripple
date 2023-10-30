@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class SplashCollider : MonoBehaviour
 {
+    public Rippler rippler;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -17,8 +19,8 @@ public class SplashCollider : MonoBehaviour
         
     }
 
-    void OnTriggerEnter(Collider collider)
+    void OnCollisionEnter(Collision collision)
     {
-        Debug.Log("Collide!");
+        rippler.DoRippleFromWorldPos(collision.transform.position, 0.5f, 0.5f);
     }
 }
