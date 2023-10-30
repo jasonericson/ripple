@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
+using Unity.Labs.SuperScience;
 
 public class ShootBall : MonoBehaviour
 {
@@ -9,10 +10,13 @@ public class ShootBall : MonoBehaviour
 
     private InputDevice rightController;
     private bool triggerLastPressed = false;
+    private GameObject heldBall;
+    private PhysicsTracker handPhysTracker;
 
     // Start is called before the first frame update
     void Start()
     {
+        handPhysTracker = new PhysicsTracker();
     }
 
     // Update is called once per frame
@@ -30,16 +34,31 @@ public class ShootBall : MonoBehaviour
         if (!rightController.isValid)
             return;
 
-        rightController.TryGetFeatureValue(CommonUsages.triggerButton, out var trigger);
-        if (trigger)
+        handPhysTracker.Update(this.transform.position, this.transform.rotation, Time.deltaTime);
+
+        rightController.TryGetFeatureValue(CommonUsages.deviceVelocity, out var controllerVelocity);
+        Debug.LogFormat("Controller Velocity: {0}", handPhysTracker.Velocity.magnitude);
+
+        rightController.TryGetFeatureValue(CommonUsages.gripButton, out var grip);
+        if (grip && !heldBall)
         {
-            if (!triggerLastPressed)
-            {
-                var ball = Instantiate(ballRef, this.transform.position, Quaternion.identity);
-                ball.GetComponent<Rigidbody>().AddForce(this.transform.forward * 1000.0f);
-            }
+            heldBall = Instantiate(ballRef, this.transform.position, Quaternion.identity, this.transform);
+            var ballRigidbody = heldBall.GetComponent<Rigidbody>();
+            ballRigidbody.isKinematic = true;
+            ballRigidbody.useGravity = false;
+        }
+        else if (!grip && heldBall)
+        {
+            heldBall.transform.SetParent(null);
+
+            var ballRigidbody = heldBall.GetComponent<Rigidbody>();
+            ballRigidbody.isKinematic = false;
+            ballRigidbody.useGravity = true;
+            ballRigidbody.velocity = handPhysTracker.Velocity;
+
+            heldBall = null;
         }
 
-        triggerLastPressed = trigger;
+        
     }
 }
