@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Experimental.GlobalIllumination;
+using FMODUnity;
 
 public class Rippler : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class Rippler : MonoBehaviour
     public Renderer heightRenderer;
     public Camera normalCam;
     public Renderer normalRenderer;
+    public FMODUnity.EventReference noteEvent;
 
     private int heightState;
     private Renderer rippleRenderer;
@@ -52,6 +54,12 @@ public class Rippler : MonoBehaviour
         Debug.LogFormat("Hit Local Pos: {0}, {1}", normalPos.x, normalPos.y);
         DoRipple(0.5f, normalPos, 0.5f);
         // DoRipple(0.5f, new Vector2(0.5f, 0.5f), 0.5f);
+        
+        var note = FMODUnity.RuntimeManager.CreateInstance(noteEvent);
+        note.setParameterByName("Z", normalPos.y);
+        note.set3DAttributes(FMODUnity.RuntimeUtils.To3DAttributes(worldPos));
+        note.start();
+        note.release();
     }
 
     private void DoRipple(float strength, Vector2 position, float size)
