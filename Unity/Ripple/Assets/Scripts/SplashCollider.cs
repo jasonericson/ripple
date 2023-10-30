@@ -21,6 +21,9 @@ public class SplashCollider : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        rippler.DoRippleFromWorldPos(collision.transform.position, 0.5f, 0.5f);
+        Debug.LogFormat("Impulse: {0}", collision.impulse.magnitude);
+        var impulseMag = collision.impulse.magnitude;
+        var normalized = Mathf.Clamp01((impulseMag - 4.0f) / 4.0f);
+        rippler.DoRippleFromWorldPos(collision.transform.position, normalized, normalized);
     }
 }

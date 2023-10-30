@@ -57,6 +57,7 @@ public class Rippler : MonoBehaviour
         
         var note = FMODUnity.RuntimeManager.CreateInstance(noteEvent);
         note.setParameterByName("Z", normalPos.y);
+        note.setVolume(strength);
         note.set3DAttributes(FMODUnity.RuntimeUtils.To3DAttributes(worldPos));
         note.start();
         note.release();
