@@ -21,9 +21,15 @@ public class SplashCollider : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        Debug.LogFormat("Impulse: {0}", collision.impulse.magnitude);
+        var ball = collision.collider.GetComponent<Ball>();
+        if (!ball)
+            return;
+
+        // if ball collides, splash! (use impulse magnitude for size/strength)
         var impulseMag = collision.impulse.magnitude;
         var normalized = Mathf.Clamp01((impulseMag - 4.0f) / 4.0f);
         rippler.DoRippleFromWorldPos(collision.transform.position, normalized, normalized);
+
+        Destroy(ball.gameObject);
     }
 }

@@ -12,7 +12,6 @@ public class ShootBall : MonoBehaviour
     public float throwBoost = 1.5f;
 
     private InputDevice controller;
-    private bool triggerLastPressed = false;
     private GameObject heldBall;
     private PhysicsTracker handPhysTracker;
     private InputDeviceCharacteristics controllerCharacteristics;
@@ -30,6 +29,7 @@ public class ShootBall : MonoBehaviour
     {
         if (!controller.isValid)
         {
+            // get controller reference, either left or right
             var devices = new List<InputDevice>();
             InputDevices.GetDevicesWithCharacteristics(controllerCharacteristics, devices);
             if (devices.Count > 0)
@@ -39,13 +39,13 @@ public class ShootBall : MonoBehaviour
         if (!controller.isValid)
             return;
 
+        // use physics tracker for better throwing
         handPhysTracker.Update(this.transform.position, this.transform.rotation, Time.deltaTime);
-
-        controller.TryGetFeatureValue(CommonUsages.deviceVelocity, out var controllerVelocity);
 
         controller.TryGetFeatureValue(CommonUsages.gripButton, out var grip);
         if (grip && !heldBall)
         {
+            // if grip button is pressed, spawn ball in hand
             heldBall = Instantiate(ballRef, this.transform.position, Quaternion.identity, this.transform);
             var ballRigidbody = heldBall.GetComponent<Rigidbody>();
             ballRigidbody.isKinematic = true;
@@ -53,6 +53,7 @@ public class ShootBall : MonoBehaviour
         }
         else if (!grip && heldBall)
         {
+            // if grip button is released, let go of ball
             heldBall.transform.SetParent(null);
 
             var ballRigidbody = heldBall.GetComponent<Rigidbody>();
