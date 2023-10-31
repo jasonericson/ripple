@@ -8,42 +8,21 @@ using Oculus.Interaction.Input;
 public class ShootBall : MonoBehaviour
 {
     public GameObject ballRef;
-    public bool isRight;
     public float throwBoost = 1.5f;
 
-    private InputDevice controller;
     private GameObject heldBall;
-    private PhysicsTracker handPhysTracker;
-    private InputDeviceCharacteristics controllerCharacteristics;
+    private ControllerInput input;
 
     // Start is called before the first frame update
     void Start()
     {
-        handPhysTracker = new PhysicsTracker();
-        controllerCharacteristics = isRight ? InputDeviceCharacteristics.Right : InputDeviceCharacteristics.Left;
-        controllerCharacteristics |= InputDeviceCharacteristics.Controller;
+        input = GetComponent<ControllerInput>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!controller.isValid)
-        {
-            // get controller reference, either left or right
-            var devices = new List<InputDevice>();
-            InputDevices.GetDevicesWithCharacteristics(controllerCharacteristics, devices);
-            if (devices.Count > 0)
-                controller = devices[0];
-        }
-
-        if (!controller.isValid)
-            return;
-
-        // use physics tracker for better throwing
-        handPhysTracker.Update(this.transform.position, this.transform.rotation, Time.deltaTime);
-
-        controller.TryGetFeatureValue(CommonUsages.gripButton, out var grip);
-        if (grip && !heldBall)
+        if (input.GripButtonDown() && !heldBall)
         {
             // if grip button is pressed, spawn ball in hand
             heldBall = Instantiate(ballRef, this.transform.position, Quaternion.identity, this.transform);
@@ -51,7 +30,7 @@ public class ShootBall : MonoBehaviour
             ballRigidbody.isKinematic = true;
             ballRigidbody.useGravity = false;
         }
-        else if (!grip && heldBall)
+        else if (input.GripButtonUp() && heldBall)
         {
             // if grip button is released, let go of ball
             heldBall.transform.SetParent(null);
@@ -59,11 +38,9 @@ public class ShootBall : MonoBehaviour
             var ballRigidbody = heldBall.GetComponent<Rigidbody>();
             ballRigidbody.isKinematic = false;
             ballRigidbody.useGravity = true;
-            ballRigidbody.velocity = handPhysTracker.Velocity * throwBoost;
+            ballRigidbody.velocity = input.GetVelocity() * throwBoost;
 
             heldBall = null;
         }
-
-        
     }
 }
