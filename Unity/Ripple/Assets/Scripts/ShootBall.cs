@@ -9,6 +9,7 @@ public class ShootBall : MonoBehaviour
 {
     public GameObject ballRef;
     public bool isRight;
+    public float throwBoost = 1.5f;
 
     private InputDevice controller;
     private bool triggerLastPressed = false;
@@ -57,7 +58,7 @@ public class ShootBall : MonoBehaviour
             var ballRigidbody = heldBall.GetComponent<Rigidbody>();
             ballRigidbody.isKinematic = false;
             ballRigidbody.useGravity = true;
-            ballRigidbody.velocity = handPhysTracker.Velocity;
+            ballRigidbody.velocity = handPhysTracker.Velocity * throwBoost;
 
             heldBall = null;
         }
