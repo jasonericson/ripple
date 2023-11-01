@@ -25,7 +25,15 @@ public class ShootBall : MonoBehaviour
         if (input.GripButtonDown() && !heldBall)
         {
             // if grip button is pressed, spawn ball in hand
-            heldBall = Instantiate(ballRef, this.transform.position, Quaternion.identity, this.transform);
+            var fingerBone = input.skeleton.Bones[8];
+            if (fingerBone.Transform)
+            {
+                heldBall = Instantiate(ballRef, fingerBone.Transform.position, Quaternion.identity, this.transform);
+            }
+            else
+            {
+                heldBall = Instantiate(ballRef, this.transform.position, Quaternion.identity, this.transform);
+            }
             var ballRigidbody = heldBall.GetComponent<Rigidbody>();
             ballRigidbody.isKinematic = true;
             ballRigidbody.useGravity = false;

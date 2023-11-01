@@ -13,8 +13,10 @@ public enum ControllerHand
 public class ControllerInput : MonoBehaviour
 {
     [System.NonSerialized] public InputDevice controller;
+    [System.NonSerialized] public OVRSkeleton skeleton;
     public ControllerHand hand;
 
+    private OVRHand ovrHand;
     private PhysicsTracker handPhysTracker;
     private InputDeviceCharacteristics controllerCharacteristics;
     private bool gripButton;
@@ -27,6 +29,9 @@ public class ControllerInput : MonoBehaviour
         handPhysTracker = new PhysicsTracker();
         controllerCharacteristics = hand == ControllerHand.Left ? InputDeviceCharacteristics.Left : InputDeviceCharacteristics.Right;
         controllerCharacteristics |= InputDeviceCharacteristics.Controller;
+
+        ovrHand = GetComponentInChildren<OVRHand>();
+        skeleton = GetComponentInChildren<OVRSkeleton>();
     }
 
     // Update is called once per frame
@@ -41,28 +46,46 @@ public class ControllerInput : MonoBehaviour
                 controller = devices[0];
         }
 
-        if (!controller.isValid)
-            return;
-
         // use physics tracker for better throwing
         handPhysTracker.Update(this.transform.position, this.transform.rotation, Time.deltaTime);
 
         gripButtonUp = false;
         gripButtonDown = false;
-        controller.TryGetFeatureValue(CommonUsages.gripButton, out var grip);
-        if (grip)
+        if (controller.isValid)
         {
-            if (!gripButton)
-                gripButtonDown = true;
+            controller.TryGetFeatureValue(CommonUsages.gripButton, out var grip);
+            if (grip)
+            {
+                if (!gripButton)
+                    gripButtonDown = true;
 
-            gripButton = true;
+                gripButton = true;
+            }
+            else
+            {
+                if (gripButton)
+                    gripButtonUp = true;
+
+                gripButton = false;
+            }
         }
         else
         {
-            if (gripButton)
-                gripButtonUp = true;
+            var pinching = ovrHand.GetFingerIsPinching(OVRHand.HandFinger.Index);
+            if (pinching)
+            {
+                if (!gripButton)
+                    gripButtonDown = true;
 
-            gripButton = false;
+                gripButton = true;
+            }
+            else
+            {
+                if (gripButton)
+                    gripButtonUp = true;
+
+                gripButton = false;
+            }
         }
     }
 
